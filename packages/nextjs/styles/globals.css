@@ -30,3 +30,59 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+
+.gradient-active {
+  background: linear-gradient(to right, #B993FE, #874AF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-hero-text {
+  background: linear-gradient(to right, #838091, #838091);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+}
+
+.gradient-hero-card-circle {
+  background: linear-gradient(to right, #8547F6, #BC98FF);
+  /* -webkit-background-clip: text; */
+  -webkit-text-fill-color: transparent;
+
+}
+
+.gradient-game-header {
+  position: relative;
+  /* border: 1px solid transparent; */
+  /* border-radius: 5px; */
+  /* padding-bottom:1px; */
+  background-image: linear-gradient(to right, #B993FE, #874AF6);
+}
+
+.gradient-page {
+  /* background-image: linear-gradient(to right, #3b2257, #070322); */
+  /* 170b2c */
+  background-image: linear-gradient(to right, #170b2c 0%, #3b2257 40%, #070322 80%, #070322 100%);
+  background-image: linear-gradient(to right, #170b2c 0%, #3b2257 40%, #070322 80%, #070322 100%);
+
+
+
+}
+
+
+.gradient-hero-card {
+  background: conic-gradient(
+    from 48%,
+    #000000 0%, 
+    #000000 48%, 
+    #493582 78%, 
+    #472f8c 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  font-size: 2rem; /* Adjust font size as needed */
+  font-weight: bold;
+}
