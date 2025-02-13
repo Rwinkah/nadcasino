@@ -4,11 +4,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { Bodies, Body, Common, Composite, Engine, Events, Render, Runner } from "matter-js";
 import { decomp } from "poly-decomp-es";
+// import { parseEther } from "viem";
+import { useAccount } from "wagmi";
+import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { Button } from "~~/components/ui/button";
 import { Input } from "~~/components/ui/input";
 import { Separator } from "~~/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~~/components/ui/tabs";
+// import { useScaffoldContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Game } from "~~/services/api/game";
+import { type PlinkoInterface } from "~~/services/api/game-types";
 
 const Multipliers = {
   "8": {
@@ -48,9 +53,11 @@ interface CollisionData {
   };
 }
 
-let collisionData: CollisionData = {};
+const collisionData: CollisionData = {};
 
-export default function Plinko() {
+export default function Plinko({ stressTest }: PlinkoInterface) {
+  const { address: connectedAddress, isConnected } = useAccount();
+
   const game = new Game();
   enum Risk {
     Medium = "medium",
@@ -63,15 +70,23 @@ export default function Plinko() {
   const obstaclesRef = useRef<Body[]>([]);
   const sinkRef = useRef<Body[]>([]);
   const ballRef = useRef<Body[]>([]);
-  const shockwavesRef = useRef<HTMLDivElement[]>([]); // Store shockwave divs
+  // const shockwavesRef = useRef<HTMLDivElement[]>([]); // Store shockwave divs
   const [amount, setAmount] = useState<number>(0.0);
   const [isDisabled, setIsDisabled] = useState(false);
   const [risk, setRisk] = useState<Risk>(Risk.Low);
   const [showNum, setShowNum] = useState<{ id: number; value: number }[]>([]);
-  const [multiplierRender, setMultiplierRender] = useState<boolean>(false);
+  // const [multiplierRender, setMultiplierRender] = useState<boolean>(false);
   const rowsRef = useRef(rows);
   const riskRef = useRef(risk);
 
+  // const { data: GameContract } = useScaffoldContract({ contractName: "Game" });
+  // const { writeContractAsync } = useScaffoldWriteContract({
+  //   contractName: "Game",
+  // });
+
+  async function BreakMonad() {
+    await game.get_report_collision();
+  }
   useEffect(() => {
     console.log(showNum.length, "Current length of shownum");
     // Set up matterjs
@@ -96,42 +111,47 @@ export default function Plinko() {
     Render.run(render);
     Runner.run(runner, engine);
 
-    function createShockwave(x: number, y: number) {
-      const shockwave = document.createElement("div");
-      shockwave.style.position = "absolute";
-      shockwave.style.left = `${x - 5}px`;
-      shockwave.style.top = `${y - 5}px`;
-      shockwave.style.width = "10px";
-      shockwave.style.height = "10px";
-      shockwave.style.border = "2px solid white";
-      shockwave.style.borderRadius = "50%";
-      shockwave.style.opacity = "1";
-      shockwave.style.pointerEvents = "none";
-      sceneRef.current?.appendChild(shockwave);
-      shockwavesRef.current.push(shockwave);
+    // function createShockwave(x: number, y: number) {
+    //   const shockwave = document.createElement("div");
+    //   shockwave.style.position = "absolute";
+    //   shockwave.style.left = `${x - 5}px`;
+    //   shockwave.style.top = `${y - 5}px`;
+    //   shockwave.style.width = "10px";
+    //   shockwave.style.height = "10px";
+    //   shockwave.style.border = "2px solid white";
+    //   shockwave.style.borderRadius = "50%";
+    //   shockwave.style.opacity = "1";
+    //   shockwave.style.pointerEvents = "none";
+    //   sceneRef.current?.appendChild(shockwave);
+    //   shockwavesRef.current.push(shockwave);
 
-      // Expand and fade out
-      let size = 10;
-      let opacity = 1;
-      const interval = setInterval(() => {
-        size += 4;
-        opacity -= 0.05;
-        shockwave.style.width = `${size}px`;
-        shockwave.style.height = `${size}px`;
-        shockwave.style.left = `${x - size / 2}px`;
-        shockwave.style.top = `${y - size / 2}px`;
-        shockwave.style.opacity = `${opacity}`;
+    //   // Expand and fade out
+    //   let size = 10;
+    //   let opacity = 1;
+    //   const interval = setInterval(() => {
+    //     size += 4;
+    //     opacity -= 0.05;
+    //     shockwave.style.width = `${size}px`;
+    //     shockwave.style.height = `${size}px`;
+    //     shockwave.style.left = `${x - size / 2}px`;
+    //     shockwave.style.top = `${y - size / 2}px`;
+    //     shockwave.style.opacity = `${opacity}`;
 
-        if (opacity <= 0) {
-          clearInterval(interval);
-          shockwave.remove();
-          shockwavesRef.current = shockwavesRef.current.filter(el => el !== shockwave);
-        }
-      }, 30);
-    }
+    //     if (opacity <= 0) {
+    //       clearInterval(interval);
+    //       shockwave.remove();
+    //       shockwavesRef.current = shockwavesRef.current.filter(el => el !== shockwave);
+    //     }
+    //   }, 30);
+    // }
 
     Events.on(engine, "collisionStart", function (event) {
-      var pairs = event.pairs;
+      (async () => {
+        if (stressTest) {
+          BreakMonad();
+        }
+      })();
+      const pairs = event.pairs;
 
       for (let i = 0; i < pairs.length; i++) {
         const pair = pairs[i];
@@ -179,6 +199,9 @@ export default function Plinko() {
           // }, 800);
         }
       }
+      // if (stressTest) {
+
+      // }
     });
     // Attach custom rendering function to Matter.Render
     Events.on(render, "afterRender", function () {
@@ -210,7 +233,7 @@ export default function Plinko() {
       Engine.clear(engine);
       render.canvas.remove();
     };
-  }, []);
+  });
 
   useEffect(() => {
     // Draw the scene
@@ -220,10 +243,10 @@ export default function Plinko() {
     Composite.remove(engine.world, sinkRef.current);
     obstaclesRef.current = [];
     sinkRef.current = [];
-    const boxA = Bodies.circle(350, 50, 5, { render: { fillStyle: "#ff0000" } });
-    const boxB = Bodies.rectangle(450, 50, 80, 80, { isStatic: true });
-    const ground = Bodies.rectangle(400, 580, 810, 40, { isStatic: true });
-    const circleA = Bodies.circle(400, 50, 5, { isStatic: true });
+    // const boxA = Bodies.circle(350, 50, 5, { render: { fillStyle: "#ff0000" } });
+    // const boxB = Bodies.rectangle(450, 50, 80, 80, { isStatic: true });
+    // const ground = Bodies.rectangle(400, 580, 810, 40, { isStatic: true });
+    // const circleA = Bodies.circle(400, 50, 5, { isStatic: true });
 
     const obstacleSpacing = 50;
     const rowSpacing = 50;
@@ -240,9 +263,9 @@ export default function Plinko() {
     function DrawScene() {
       let circleY = 0;
       for (let i = 0; i < rows; i++) {
-        let numBalls = i + 3;
+        const numBalls = i + 3;
         let lower = -Math.floor(numBalls / 2);
-        let higher = Math.floor(numBalls / 2);
+        const higher = Math.floor(numBalls / 2);
 
         for (; lower <= higher; lower++) {
           const even = numBalls % 2 === 0;
@@ -251,11 +274,11 @@ export default function Plinko() {
             continue;
           }
 
-          let circleX = !even
+          const circleX = !even
             ? startObstacleX + lower * obstacleSpacing
             : startObstacleX + 25 + lower * obstacleSpacing;
           circleY = startObstacleY + i * rowSpacing;
-          let newCirlce = Bodies.circle(circleX, circleY, obstacleSize, {
+          const newCirlce = Bodies.circle(circleX, circleY, obstacleSize, {
             isStatic: true,
             render: {
               fillStyle: "#ffffff",
@@ -263,7 +286,7 @@ export default function Plinko() {
             label: "obstacle",
           });
           if (i === rows - 2) {
-            let newSink = Bodies.rectangle(circleX, circleY + 100, sinkWidth, sinkHeight, {
+            const newSink = Bodies.rectangle(circleX, circleY + 100, sinkWidth, sinkHeight, {
               isStatic: true,
               label: "sink",
               collisionFilter: {
@@ -287,17 +310,17 @@ export default function Plinko() {
       }
     }
 
-    function DrawSinks(rows: number, sinkY: number) {
-      sinkY += 30;
-      let lower = -Math.floor(rows / 2);
-      let higher = Math.floor(rows / 2);
-      for (; lower < higher; lower++) {
-        let sinkX = startSinkX + lower * sinkDistance;
+    // function DrawSinks(rows: number, sinkY: number) {
+    //   sinkY += 30;
+    //   let lower = -Math.floor(rows / 2);
+    //   let higher = Math.floor(rows / 2);
+    //   for (; lower < higher; lower++) {
+    //     let sinkX = startSinkX + lower * sinkDistance;
 
-        let newSink = Bodies.rectangle(sinkX, sinkY, sinkWidth, sinkHeight, { isStatic: true });
-        sinkRef.current.push(newSink);
-      }
-    }
+    //     let newSink = Bodies.rectangle(sinkX, sinkY, sinkWidth, sinkHeight, { isStatic: true });
+    //     sinkRef.current.push(newSink);
+    //   }
+    // }
     DrawScene();
     Composite.add(engine.world, [...obstaclesRef.current]);
     Composite.add(engine.world, [...sinkRef.current]);
@@ -377,17 +400,22 @@ export default function Plinko() {
   async function DropBall() {
     // for (let i = 0; i < 300; i++) {
 
-    let dropData = await game.get_plinko_multiplier({ risk: risk.toString(), rows: rows.toString(), clientSecret: "" });
-    // let dropBallX = Math.random() * (450 - 350) + 350;
-    const multiplierKey: string = Object.keys(dropData.multiplier)[0];
+    const dropData = await game.post_plinko_multiplier({
+      risk: risk.toString(),
+      rows: rows.toString(),
+      clientSecret: "",
+      value: amount,
+      wallet: connectedAddress,
+    });
 
-    let dropBallX = parseFloat(multiplierKey);
-    let value = dropData.multiplier[multiplierKey];
+    const multiplierKey: string = Object.keys(dropData.multiplier)[0];
+    const dropBallX = parseFloat(multiplierKey);
+    const value = dropData.multiplier[multiplierKey];
     console.log(dropBallX, "is dropball x", value, "is value");
 
     console.log(risk, "is risk", rows, "is rows");
 
-    let newDropBall = Bodies.circle(dropBallX, 50, 8, {
+    const newDropBall = Bodies.circle(dropBallX, 50, 8, {
       render: { fillStyle: "#ff0000" },
       label: "dropball",
       restitution: 1,
@@ -409,7 +437,7 @@ export default function Plinko() {
     if (ballRef.current.length > 0) {
       return;
     } else {
-      let intval = parseInt(value);
+      const intval = parseInt(value);
       console.log("ball row changed");
       console.log(value, intval, "is the new row value");
       setRows(intval); // Update rows state based on selected value
@@ -424,7 +452,7 @@ export default function Plinko() {
   };
 
   function updateAmount(e: React.ChangeEvent<HTMLInputElement>) {
-    let value = parseFloat(e.target.value);
+    const value = parseFloat(e.target.value);
     setAmount(value);
   }
 
@@ -553,9 +581,14 @@ export default function Plinko() {
                 </Select>
               </div>
             </div>
-            <Button className="w-full" onClick={DropBall}>
-              Bet
-            </Button>
+            {isConnected ? (
+              <Button className="w-full" onClick={DropBall}>
+                Bet
+              </Button>
+            ) : (
+              <RainbowKitCustomConnectButton />
+            )}
+
             {/* <Button onClick={}>Dowload Test Data</Button> */}
           </TabsContent>
           <TabsContent value="auto">auto</TabsContent>

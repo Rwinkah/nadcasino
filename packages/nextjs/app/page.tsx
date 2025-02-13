@@ -1,18 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 import multiplierIcon from "../public/multiplier.png";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
-import { ArrowRightIcon, BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Address } from "~~/components/scaffold-eth";
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
+// import { Address } from "~~/components/scaffold-eth";
 import { Button } from "~~/components/ui/button";
 import RocketIcon from "~~/public/assets/icons/Rocket";
 import StarIcon from "~~/public/assets/icons/Star";
 
 const Home: NextPage = () => {
-  const { address: connectedAddress, isConnected } = useAccount();
+  const { isConnected } = useAccount();
 
   return (
     <>
@@ -61,7 +61,7 @@ const Home: NextPage = () => {
               </div>
               <p className="text-3xl m-0">Lightning Fast</p>
               <p className="text-[0.82rem]">
-                Powered by Monad's 10,000 TPS blockchain for instant transactions and real-time gameplay
+                Powered by Monad&apos;s 10,000 TPS blockchain for instant transactions and real-time gameplay
               </p>
             </div>
             <div

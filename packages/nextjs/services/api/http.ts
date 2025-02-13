@@ -2,7 +2,8 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 
 class BaseApi {
-  apiUrl = process.env.NEXT_API_URL || "http://localhost:8000";
+  // apiUrl = process.env.NEXT_API_URL || "https://nadcasino-backend.onrender.com";
+  apiUrl = process.env.API_URL;
   private api: AxiosInstance;
   constructor() {
     this.api = axios.create({

@@ -4,3 +4,7 @@ export interface PlinkoPlay {
   client_seed: string;
   hash: string;
 }
+
+export interface PlinkoInterface {
+  stressTest: boolean;
+}

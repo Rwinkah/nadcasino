@@ -26,7 +26,7 @@ export default function page() {
         <div className="absolute  top-[5%] inset-0 h-[70vh] w-[35vw] 2xl:hidden   bg-[#E705D8] opacity-5 rounded-full blur-3xl" />
       </div>
       <div id="games__body " className="flex flex-col mt-[40px]">
-        <Plinko />{" "}
+        <Plinko stressTest={false} />{" "}
       </div>
     </div>
   );

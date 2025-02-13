@@ -1,3 +1,9 @@
+import Plinko from "../plinko/page";
+
 export default function Page() {
-  return <div></div>;
+  return (
+    <div className="h-screen w-full items-center flex justify-center">
+      <Plinko stressTest={true} />
+    </div>
+  );
 }

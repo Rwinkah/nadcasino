@@ -7,7 +7,7 @@ export default function CurrencyInput() {
   const [value, setValue] = useState("");
 
   const handleChange = (e: any) => {
-    let val = e.target.value;
+    const val = e.target.value;
     // Ensure only valid decimal numbers are entered
     if (/^\d*\.?\d*$/.test(val)) {
       setValue(val);

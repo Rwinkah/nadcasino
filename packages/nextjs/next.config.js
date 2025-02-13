@@ -14,6 +14,9 @@ const nextConfig = {
     config.externals.push("pino-pretty", "lokijs", "encoding");
     return config;
   },
+  env: {
+    API_URL: process.env.NODE_ENV === "production" ? process.env.NEXT_API_URL_PROD : process.env.NEXT_API_URL_DEV,
+  },
 };
 
 module.exports = nextConfig;
