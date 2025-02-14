@@ -6,7 +6,6 @@ import { Bodies, Body, Common, Composite, Engine, Events, Render, Runner } from 
 import { decomp } from "poly-decomp-es";
 // import { parseEther } from "viem";
 import { useAccount } from "wagmi";
-import { RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { Button } from "~~/components/ui/button";
 import { Input } from "~~/components/ui/input";
 import { Separator } from "~~/components/ui/separator";
@@ -233,7 +232,7 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
       Engine.clear(engine);
       render.canvas.remove();
     };
-  });
+  }, []);
 
   useEffect(() => {
     // Draw the scene
@@ -496,7 +495,7 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
   //   URL.revokeObjectURL(url);
   // }
   return (
-    <div className="flex  w-full  items-center justify-center h-full  gap-6 ">
+    <div className={`flex   w-full  items-center justify-center h-full  gap-6 `}>
       <div className=" border-[#333947] bg-[#070322] border rounded-[32px] lg:h-[800px] w-[400px]">
         <Tabs defaultValue="manual" className="flex flex-col items-center  p-4">
           <TabsList className="bg-[#09011C] border border-[#333947]  h-[66px] rounded-[24px] lg:w-[360px] flex items-center  justify-center">
@@ -586,7 +585,7 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
                 Bet
               </Button>
             ) : (
-              <RainbowKitCustomConnectButton />
+              <p>Connect Wallet</p>
             )}
 
             {/* <Button onClick={}>Dowload Test Data</Button> */}

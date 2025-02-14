@@ -23,7 +23,7 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
         <main className="relative items-center flex flex-col flex-1">
           <div className="gradientpage w-full justify-center h-full items-center flex flex-col">{children}</div>
         </main>
-        <Footer />
+        {/* <Footer /> */}
       </div>
       <Toaster />
     </>

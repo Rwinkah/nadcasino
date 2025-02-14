@@ -65,7 +65,7 @@ export const HeaderMenuLinks = () => {
 /**
  * Site header
  */
-export const Header = () => {
+export const Header = ({ props }: any) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   useOutsideClick(
@@ -73,8 +73,13 @@ export const Header = () => {
     useCallback(() => setIsDrawerOpen(false), []),
   );
 
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+
   return (
-    <div className="fixed  top-0  navbar bg-[#070322] min-h-0 flex-shrink-0 justify-between z-[9999]  px-0 sm:px-2">
+    <div
+      className={`fixed  top-0  navbar ar ${isHomePage ? "bg-transparent" : "bg-[#070322]"}  min-h-0 flex-shrink-0 justify-between z-[9999]  px-0 sm:px-2`}
+    >
       <div className=" w-auto lg:w-full">
         <div className="lg:hidden dropdown" ref={burgerMenuRef}>
           <label
@@ -89,7 +94,7 @@ export const Header = () => {
           {isDrawerOpen && (
             <ul
               tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-transparent rounded-box w-52"
+              className="menu menu-compact w-[90vw] dropdown-content mt-3 p-2 shadow bg-[#070322] rounded-box"
               onClick={() => {
                 setIsDrawerOpen(false);
               }}
@@ -98,6 +103,7 @@ export const Header = () => {
             </ul>
           )}
         </div>
+
         <Link href="/" passHref className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0">
           <div className="flex relative min-w-10 items-center justify-center gap-2 font-semibold h-10">
             {/* <Image alt="SE2 logo" className="cursor-pointer" fill src="/logo.svg" /> */}
@@ -111,7 +117,7 @@ export const Header = () => {
       </div>
       <div className="justify-end flex-grow flex-shrink-0  w-auto">
         <RainbowKitCustomConnectButton />
-        <FaucetButton />
+        {/* <FaucetButton /> */}
       </div>
     </div>
   );

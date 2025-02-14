@@ -25,10 +25,10 @@ const Home: NextPage = () => {
           className="w-full right-0 absolute top-0 z-0 bg-cover h-[970px]"
         />
         <div
-          className=" flex mt-[400px] flex-col items-center justify-center max-w-[950px]  text-center"
+          className=" flex mt-[100px] lg:mt-[400px] w-full flex-col items-center justify-center lg:max-w-[950px]  text-center"
           id="home__hero "
         >
-          <h1 className=" max-w-[950px] text-[80px]  font-semibold ">
+          <h1 className=" lg:max-w-[950px] md:text-[80px] text-[40px]  font-semibold ">
             EXPERIENCE NEXT-GEN <span className="gradient-hero-text">BLOCKCHAIN GAMING </span>
           </h1>
           <p className="text-[26px] font-normal">
@@ -39,15 +39,8 @@ const Home: NextPage = () => {
             <Button className="flex items-center justify-center bg-[#917CF7] font-bold text-sm  rounded-full max-w-[123px] mt-9">
               Play Now <ArrowRightIcon />
             </Button>
-            {!isConnected ? (
-              <Button className="flex items-center text-sm font-bold justify-center bg-[#ffffff] text-[#475569] rounded-full">
-                Connect Wallet <ArrowRightIcon />
-              </Button>
-            ) : (
-              <></>
-            )}
           </div>
-          <div className="flex gap-9  w-fit">
+          <div className="lg:flex-row flex flex-col gap-9 px-5 lg:px-0  w-fit">
             <div
               className=" lg:w-[375px] border rounded-3xl px-10  text-center border-gray-400 lg:h-[200px]"
               style={{ backgroundImage: "url(/shine.png)" }}
@@ -96,8 +89,11 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-        <div id="home__plinko" className="flex justify-between max-w-[1200px] w-full mt-[125px] items-center">
-          <div id="home__plinko__left" className="max-w-[480px] flex flex-col ">
+        <div
+          id="home__plinko"
+          className="flex md:flex-row flex-col justify-between max-w-[1200px] w-full mt-[125px] items-center"
+        >
+          <div id="home__plinko__left" className="max-w-[480px] px-4 lg:px-0 flex flex-col ">
             <h2 className=" m-0 font-medium text-white text-[64px]">Plinko</h2>
             <p className="m-0 mt-2 text-[#D5D3DF] text-[32px]">Drop the ball and watch it bounce to big wins!</p>
             <p className="m-0 mt-5 text-[#D5D3DF] text-lg">Max Multiplier</p>
@@ -106,10 +102,16 @@ const Home: NextPage = () => {
               Play Now <ArrowRightIcon />
             </Button>
           </div>
-          <div style={{ backgroundImage: "url(/plinko.png)" }} className="bg-cover w-[480px] h-[480px]" />
+          <div
+            style={{ backgroundImage: "url(/plinko.png)" }}
+            className="bg-cover lg:w-[480px] lg:h-[480px] w-0 h-0 "
+          />
         </div>
-        <div id="home__plinko" className="flex justify-between max-w-[1200px] w-full mt-[125px] items-center">
-          <div id="home__plinko__left" className="max-w-[480px] flex flex-col ">
+        <div
+          id="home__mines"
+          className="flex lg:flex-row flex-col justify-between max-w-[1200px] w-full mt-[125px] items-center"
+        >
+          <div id="home__mines__left" className="max-w-[480px] flex flex-col w-full  px-4 lg:px-0 ">
             <h2 className=" m-0 font-medium text-white text-[64px]">Mines</h2>
             <p className="m-0 mt-2 text-[#D5D3DF] text-[32px]">Avoid mines find the gems</p>
             <p className="m-0 mt-5 text-[#D5D3DF] text-lg">Max Multiplier</p>
@@ -118,7 +120,7 @@ const Home: NextPage = () => {
               Play Now <ArrowRightIcon />
             </Button>
           </div>
-          <div style={{ backgroundImage: "url(/mines.png)" }} className="bg-cover w-[480px] h-[480px]" />
+          <div style={{ backgroundImage: "url(/mines.png)" }} className="bg-cover lg:w-[480px] lg:h-[480px] w-0 h-0 " />
         </div>
       </div>
     </>

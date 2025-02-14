@@ -8,7 +8,7 @@ class BaseApi {
   constructor() {
     this.api = axios.create({
       baseURL: this.apiUrl, // Fixed API URL
-      timeout: 10000, // Optional: 10-second timeout
+      // timeout: 10000, // Optional: 10-second timeout
     });
 
     // Request Interceptor (for adding auth tokens)
