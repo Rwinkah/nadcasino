@@ -69,8 +69,8 @@ const config: HardhatUserConfig = {
       url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
       accounts: [deployerPrivateKey, trustedSignerPrivateKey],
     },
-    monad: {
-      url: `https://eth-sepolia.g.alchemy.com/v2/${providerApiKey}`,
+    monadDevnet: {
+      url: `https://rpc-devnet.monadinfra.com/rpc/3fe540e310bbb6ef0b9f16cd23073b0a`,
       accounts: [deployerPrivateKey, trustedSignerPrivateKey],
     },
     arbitrum: {

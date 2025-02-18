@@ -1,6 +1,7 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
+import { parseUnits } from "ethers";
 
 /**
  * Deploys the "Game" contract using the deployer account
@@ -17,6 +18,7 @@ const deployGame: DeployFunction = async function (hre: HardhatRuntimeEnvironmen
     args: [trustedSigner], // Pass the trusted signer to the constructor
     log: true,
     autoMine: true,
+    gasPrice: parseUnits("50", "gwei"), // Increase if needed
   });
 
   const Game = await hre.ethers.getContract<Contract>("Game", deployer);

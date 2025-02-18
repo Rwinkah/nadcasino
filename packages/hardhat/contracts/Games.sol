@@ -2,65 +2,37 @@
 pragma solidity ^0.8.0;
 
 contract Game {
+    address public owner; // Admin for security
     address public trustedSigner; // Backend's trusted signer
     mapping(address => uint256) public latestNonce; // Tracks the latest nonce per user
     uint256 public collisionCount;
 
     event Collision(uint256 collisionCount, address player);
-
     event Payout(address indexed player, uint256 amount);
+    event BetPlaced(address indexed player, uint256 amount, uint256 timestamp, uint256 nonce);
 
     constructor(address _trustedSigner) {
         trustedSigner = _trustedSigner;
+        owner = msg.sender;
     }
 
-    // function playGame(bytes memory signature) external {
-    //     require(nonce > latestNonce[player], "Invalid or reused nonce");
+    function placeBet(uint256 amount, uint256 timestamp, uint256 nonce, bytes memory signature) external payable {
+        require(msg.value == amount, "Sent ETH does not match the bet amount");
+        require(nonce == latestNonce[msg.sender] + 1, "Invalid nonce"); // Prevent replay attacks
 
-    //     // Verify the signature
-    //     bytes32 messageHash = keccak256(abi.encodePacked(player, amount, nonce));
-    //     require(_verifySignature(messageHash, signature), "Invalid signature");
-
-    //     latestNonce[player] = nonce; // Update nonce after successful verification
-
-    //     require(address(this).balance >= amount, "Insufficient contract balance");
-    //     (bool success, ) = player.call{ value: amount }("");
-    //     require(success, "Transfer failed");
-
-    //     emit Payout(player, amount);
-    // }
-    function _extractSignedData(
-        bytes memory signature
-    ) internal pure returns (address player, uint256 amount, uint256 nonce) {
-        require(signature.length >= 97, "Invalid signature data"); // 65 for signature + 32 for data
-        assembly {
-            player := mload(add(signature, 20))
-            amount := mload(add(signature, 52))
-            nonce := mload(add(signature, 84))
-        }
-    }
-
-    function playGame(bytes memory signature) external {
-        (address player, uint256 amount, uint256 nonce) = _extractSignedData(signature);
-
-        require(nonce > latestNonce[player], "Invalid or reused nonce");
-
-        // Verify the signature
-        bytes32 messageHash = keccak256(abi.encodePacked(player, amount, nonce));
+        // Verify signature includes nonce
+        bytes32 messageHash = keccak256(abi.encodePacked(msg.sender, amount, timestamp, nonce));
         require(_verifySignature(messageHash, signature), "Invalid signature");
 
-        latestNonce[player] = nonce; // Update nonce after successful verification
+        latestNonce[msg.sender] = nonce; // ✅ Update nonce
 
-        require(address(this).balance >= amount, "Insufficient contract balance");
-        (bool success, ) = player.call{ value: amount }("");
-        require(success, "Transfer failed");
-
-        emit Payout(player, amount);
+        emit BetPlaced(msg.sender, amount, timestamp, nonce);
     }
 
     function _verifySignature(bytes32 messageHash, bytes memory signature) internal view returns (bool) {
+        address signer = trustedSigner; // Store trusted signer in memory
         bytes32 ethSignedMessageHash = _getEthSignedMessageHash(messageHash);
-        return recoverSigner(ethSignedMessageHash, signature) == trustedSigner;
+        return recoverSigner(ethSignedMessageHash, signature) == signer;
     }
 
     function _getEthSignedMessageHash(bytes32 messageHash) internal pure returns (bytes32) {
@@ -81,18 +53,20 @@ contract Game {
         }
     }
 
-    // Admin function to update the trusted signer
     function updateTrustedSigner(address newSigner) external {
-        require(msg.sender == trustedSigner, "Only current signer can update");
+        require(msg.sender == owner, "Only owner can update signer");
         trustedSigner = newSigner;
     }
 
+    function transferOwnership(address newOwner) external {
+        require(msg.sender == owner, "Only owner can transfer ownership");
+        owner = newOwner;
+    }
+
     function reportCollision() public {
-        // require(msg.sender == trustedSigner, "Who are you?");
         collisionCount++;
         emit Collision(collisionCount, msg.sender);
     }
 
-    // Fallback function to receive Ether
     receive() external payable {}
 }

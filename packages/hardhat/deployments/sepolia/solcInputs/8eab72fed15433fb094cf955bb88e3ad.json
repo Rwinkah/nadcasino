@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/Games.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Game {\n    address public trustedSigner; // Backend's trusted signer\n    mapping(address => uint256) public latestNonce; // Tracks the latest nonce per user\n    uint256 public collisionCount;\n\n    event Collision(uint256 collisionCount, address player);\n\n    event Payout(address indexed player, uint256 amount);\n\n    constructor(address _trustedSigner) {\n        trustedSigner = _trustedSigner;\n    }\n\n    // function playGame(bytes memory signature) external {\n    //     require(nonce > latestNonce[player], \"Invalid or reused nonce\");\n\n    //     // Verify the signature\n    //     bytes32 messageHash = keccak256(abi.encodePacked(player, amount, nonce));\n    //     require(_verifySignature(messageHash, signature), \"Invalid signature\");\n\n    //     latestNonce[player] = nonce; // Update nonce after successful verification\n\n    //     require(address(this).balance >= amount, \"Insufficient contract balance\");\n    //     (bool success, ) = player.call{ value: amount }(\"\");\n    //     require(success, \"Transfer failed\");\n\n    //     emit Payout(player, amount);\n    // }\n    function _extractSignedData(\n        bytes memory signature\n    ) internal pure returns (address player, uint256 amount, uint256 nonce) {\n        require(signature.length >= 97, \"Invalid signature data\"); // 65 for signature + 32 for data\n        assembly {\n            player := mload(add(signature, 20))\n            amount := mload(add(signature, 52))\n            nonce := mload(add(signature, 84))\n        }\n    }\n\n    function playGame(bytes memory signature) external {\n        (address player, uint256 amount, uint256 nonce) = _extractSignedData(signature);\n\n        require(nonce > latestNonce[player], \"Invalid or reused nonce\");\n\n        // Verify the signature\n        bytes32 messageHash = keccak256(abi.encodePacked(player, amount, nonce));\n        require(_verifySignature(messageHash, signature), \"Invalid signature\");\n\n        latestNonce[player] = nonce; // Update nonce after successful verification\n\n        require(address(this).balance >= amount, \"Insufficient contract balance\");\n        (bool success, ) = player.call{ value: amount }(\"\");\n        require(success, \"Transfer failed\");\n\n        emit Payout(player, amount);\n    }\n\n    function _verifySignature(bytes32 messageHash, bytes memory signature) internal view returns (bool) {\n        bytes32 ethSignedMessageHash = _getEthSignedMessageHash(messageHash);\n        return recoverSigner(ethSignedMessageHash, signature) == trustedSigner;\n    }\n\n    function _getEthSignedMessageHash(bytes32 messageHash) internal pure returns (bytes32) {\n        return keccak256(abi.encodePacked(\"\\x19Ethereum Signed Message:\\n32\", messageHash));\n    }\n\n    function recoverSigner(bytes32 ethSignedMessageHash, bytes memory signature) internal pure returns (address) {\n        (bytes32 r, bytes32 s, uint8 v) = splitSignature(signature);\n        return ecrecover(ethSignedMessageHash, v, r, s);\n    }\n\n    function splitSignature(bytes memory sig) internal pure returns (bytes32 r, bytes32 s, uint8 v) {\n        require(sig.length == 65, \"Invalid signature length\");\n        assembly {\n            r := mload(add(sig, 32))\n            s := mload(add(sig, 64))\n            v := byte(0, mload(add(sig, 96)))\n        }\n    }\n\n    // Admin function to update the trusted signer\n    function updateTrustedSigner(address newSigner) external {\n        require(msg.sender == trustedSigner, \"Only current signer can update\");\n        trustedSigner = newSigner;\n    }\n\n    function reportCollision() public {\n        // require(msg.sender == trustedSigner, \"Who are you?\");\n        collisionCount++;\n        emit Collision(collisionCount, msg.sender);\n    }\n\n    // Fallback function to receive Ether\n    receive() external payable {}\n\n    function placeBet() external payable {\n        require(msg.value > 0, \"Bet amount must be greater than zero\");\n    }\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

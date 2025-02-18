@@ -1,0 +1,39 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/Games.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\ncontract Game {\n    address public owner; // Admin for security\n    address public trustedSigner; // Backend's trusted signer\n    mapping(address => uint256) public latestNonce; // Tracks the latest nonce per user\n    uint256 public collisionCount;\n\n    event Collision(uint256 collisionCount, address player);\n    event Payout(address indexed player, uint256 amount);\n    event BetPlaced(address indexed player, uint256 amount, uint256 timestamp, uint256 nonce);\n\n    constructor(address _trustedSigner) {\n        trustedSigner = _trustedSigner;\n        owner = msg.sender;\n    }\n\n    function placeBet(uint256 amount, uint256 timestamp, uint256 nonce, bytes memory signature) external payable {\n        require(msg.value == amount, \"Sent ETH does not match the bet amount\");\n        require(nonce == latestNonce[msg.sender] + 1, \"Invalid nonce\"); // Prevent replay attacks\n\n        // Verify signature includes nonce\n        bytes32 messageHash = keccak256(abi.encodePacked(msg.sender, amount, timestamp, nonce));\n        require(_verifySignature(messageHash, signature), \"Invalid signature\");\n\n        latestNonce[msg.sender] = nonce; // ✅ Update nonce\n\n        emit BetPlaced(msg.sender, amount, timestamp, nonce);\n    }\n\n    function _verifySignature(bytes32 messageHash, bytes memory signature) internal view returns (bool) {\n        address signer = trustedSigner; // Store trusted signer in memory\n        bytes32 ethSignedMessageHash = _getEthSignedMessageHash(messageHash);\n        return recoverSigner(ethSignedMessageHash, signature) == signer;\n    }\n\n    function _getEthSignedMessageHash(bytes32 messageHash) internal pure returns (bytes32) {\n        return keccak256(abi.encodePacked(\"\\x19Ethereum Signed Message:\\n32\", messageHash));\n    }\n\n    function recoverSigner(bytes32 ethSignedMessageHash, bytes memory signature) internal pure returns (address) {\n        (bytes32 r, bytes32 s, uint8 v) = splitSignature(signature);\n        return ecrecover(ethSignedMessageHash, v, r, s);\n    }\n\n    function splitSignature(bytes memory sig) internal pure returns (bytes32 r, bytes32 s, uint8 v) {\n        require(sig.length == 65, \"Invalid signature length\");\n        assembly {\n            r := mload(add(sig, 32))\n            s := mload(add(sig, 64))\n            v := byte(0, mload(add(sig, 96)))\n        }\n    }\n\n    function updateTrustedSigner(address newSigner) external {\n        require(msg.sender == owner, \"Only owner can update signer\");\n        trustedSigner = newSigner;\n    }\n\n    function transferOwnership(address newOwner) external {\n        require(msg.sender == owner, \"Only owner can transfer ownership\");\n        owner = newOwner;\n    }\n\n    function reportCollision() public {\n        collisionCount++;\n        emit Collision(collisionCount, msg.sender);\n    }\n\n    receive() external payable {}\n}\n"
+    },
+    "contracts/Nadcasino.sol": {
+      "content": ""
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
