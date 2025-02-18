@@ -98,8 +98,8 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
       element: sceneRef.current as HTMLDivElement, // Attach to div instead of document.body
       engine: engine,
       options: {
-        width: 780,
-        height: 780,
+        width: 800,
+        height: 700,
         wireframes: false,
         background: "#070322",
       },
@@ -496,52 +496,55 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
   // }
   return (
     <div className={`flex   w-full  items-center justify-center h-full  gap-6 `}>
-      <div className=" border-[#333947] bg-[#070322] border rounded-[32px] lg:h-[800px] w-[400px]">
+      <div className=" border-[#333947] bg-[#070322] border rounded-[32px] lg:h-[700px] w-[400px]">
         <Tabs defaultValue="manual" className="flex flex-col items-center  p-4">
           <TabsList className="bg-[#09011C] border border-[#333947]  h-[66px] rounded-[24px] lg:w-[360px] flex items-center  justify-center">
             <TabsTrigger className="w-full h-[90%] rounded-[16px]" value="manual">
               Manual
             </TabsTrigger>
-            <TabsTrigger className="w-full h-[90%] rounded-[16px]" value="auto">
+            <TabsTrigger disabled={true} className="w-full cursor-disabled h-[90%] rounded-[16px]" value="auto">
               Auto
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="manual" className="flex flex-col mt-8 w-full gap-10 items-center">
-            <div className="flex flex-col w-full gap-2">
-              <div className="flex w-full justify-between">
-                <span>Bet Amount</span>
-                <span>$0.00</span>
-              </div>
-              <div className="w-full flex h-[50px]  gradient-game-header p-[1px]">
-                <Input
-                  onChange={updateAmount}
-                  value={amount}
-                  placeholder="testing"
-                  type="number"
-                  step="0.0001"
-                  className="min-w-[60%] border-none outline-none rounded-none  bg-[#09011C] font-medium text-white h-full"
-                />
-                <div></div>
-                <Button
-                  onClick={() => {
-                    setAmount(prevAmount => prevAmount / 2);
-                  }}
-                  className="flex shrink-0 h-full bg-[#21123D] rounded-none"
-                >
-                  1/2
-                </Button>
-                <div className="bg-[#21123D] items-center flex h-full">
-                  <Separator className="bg-[#09011C] h-4/5 w-[2px]" orientation="vertical" />
+            {!stressTest && (
+              <div className="flex flex-col w-full gap-2">
+                <div className="flex w-full justify-between">
+                  <span>Bet Amount</span>
+                  <span>$0.00</span>
                 </div>
-                <Button
-                  onClick={() => setAmount(prevAmount => prevAmount * 2)}
-                  className="h-full flex shrink-0 bg-[#21123D] rounded-none"
-                >
-                  2
-                </Button>
+
+                <div className="w-full flex h-[50px]  gradient-game-header p-[1px]">
+                  <Input
+                    onChange={updateAmount}
+                    value={amount}
+                    placeholder="0"
+                    type="number"
+                    step="0.0001"
+                    className="min-w-[60%] border-none outline-none rounded-none  bg-[#09011C] font-medium text-white h-full"
+                  />
+                  <div></div>
+                  <Button
+                    onClick={() => {
+                      setAmount(prevAmount => prevAmount / 2);
+                    }}
+                    className="flex shrink-0 h-full bg-[#21123D] rounded-none"
+                  >
+                    1/2
+                  </Button>
+                  <div className="bg-[#21123D] items-center flex h-full">
+                    <Separator className="bg-[#09011C] h-4/5 w-[2px]" orientation="vertical" />
+                  </div>
+                  <Button
+                    onClick={() => setAmount(prevAmount => prevAmount * 2)}
+                    className="h-full flex shrink-0 bg-[#21123D] rounded-none"
+                  >
+                    2
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
             <div className="flex flex-col w-full gap-2">
               <div className="flex w-full justify-between">
                 <span>Risk</span>
@@ -582,7 +585,7 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
             </div>
             {isConnected ? (
               <Button className="w-full" onClick={DropBall}>
-                Bet
+                {stressTest ? "Play" : "Bet"}
               </Button>
             ) : (
               <p>Connect Wallet</p>
@@ -593,7 +596,7 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
           <TabsContent value="auto">auto</TabsContent>
         </Tabs>
       </div>
-      <div className="border border-[#333947] bg-[#070322] rounded-[24px]  shadow-2xl w-[800px] h-[800px] flex flex-col items-center justify-center ">
+      <div className="border border-[#333947] bg-[#070322] rounded-[24px]  shadow-2xl w-[800px] h-[700px] flex flex-col items-center justify-center ">
         <div
           ref={sceneRef}
           style={{
