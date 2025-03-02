@@ -48,12 +48,21 @@ export const HeaderMenuLinks = () => {
             <Link
               href={href}
               passHref
-              className={`${
+              className={`relative group ${
                 isActive ? "gradient-active shadow-md" : ""
-              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
+              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral 
+    py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col 
+    ${label === "Games" ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}`}
             >
               {icon}
               <span className="font-medium">{label}</span>
+
+              {/* Tooltip - Only visible when label is "games" */}
+              {label === "Games" && (
+                <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 bg-black text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  Coming Soon
+                </span>
+              )}
             </Link>
           </li>
         );

@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 // import Link from "next/link";
 import multiplierIcon from "../public/multiplier.png";
+import { Auth, useTurnkey } from "@turnkey/sdk-react";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
@@ -13,7 +16,31 @@ import StarIcon from "~~/public/assets/icons/Star";
 
 const Home: NextPage = () => {
   const { isConnected } = useAccount();
+  const router = useRouter();
+  const onAuthSuccess = async () => {
+    // We'll add the dashboard route in the next step
+    router.push("/dashboard");
+  };
 
+  const onError = (errorMessage: string) => {
+    console.log("An errror has occured");
+  };
+
+  const config = {
+    authConfig: {
+      emailEnabled: true,
+      // Set the rest to false to disable them
+      passkeyEnabled: false,
+      phoneEnabled: false,
+      appleEnabled: false,
+      facebookEnabled: false,
+      googleEnabled: false,
+    },
+    // The order of the auth methods to display in the UI
+    configOrder: ["email" /* "passkey", "phone", "socials" */],
+    onError: onError,
+    onAuthSuccess: onAuthSuccess,
+  };
   return (
     <>
       <div

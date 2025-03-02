@@ -56,6 +56,8 @@
     "node": ">=18.18.0"
   },
   "dependencies": {
+    "@turnkey/sdk-browser": "^1.13.0",
+    "@turnkey/sdk-react": "^3.0.3",
     "axios": "^1.7.9",
     "matter-js": "^0.20.0",
     "poly-decomp": "^0.3.0",

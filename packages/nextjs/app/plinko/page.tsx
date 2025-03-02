@@ -84,7 +84,7 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
   // });
 
   async function BreakMonad() {
-    await game.get_report_collision();
+    await game.post_report_collision(connectedAddress);
   }
   useEffect(() => {
     console.log(showNum.length, "Current length of shownum");

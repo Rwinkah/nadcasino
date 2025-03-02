@@ -19,3 +19,15 @@ export const monadDevnet = defineChain({
     },
   },
 });
+
+export const monadTestnet = defineChain({
+  id: 10143,
+  name: "Monad Testnet",
+  nativeCurrency: { name: "Monad", symbol: "MON", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://testnet-rpc.monad.xyz/"] },
+  },
+  blockExplorers: {
+    default: { name: "Monad Testnet", url: "https://testnet.monadexplorer.com/" },
+  },
+});
