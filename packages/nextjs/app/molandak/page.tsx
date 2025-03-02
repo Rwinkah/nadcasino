@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { Howl } from "howler";
 import { Bodies, Body, Common, Composite, Engine, Events, Render, Runner } from "matter-js";
 import { decomp } from "poly-decomp-es";
 import { useAccount } from "wagmi";
@@ -22,6 +23,10 @@ const testData = [
 ];
 
 export default function MolandakRun() {
+  const collisionSound = new Howl({
+    src: ["/sound-effects/die(1).mp3"], // Replace with the path to your sound file
+    volume: 1.0, // Set volume (0.0 to 1.0)
+  });
   const { address: connectedAddress } = useAccount();
   const game = new Game();
   const [showGame, setShowGame] = useState<boolean>(false);
@@ -213,6 +218,7 @@ export default function MolandakRun() {
           Runner.stop(runner);
           setGameover(true);
           console.log("valid freeze");
+          collisionSound.play();
           await game.post_molandak_highscore({ score: score, player: connectedAddress });
 
           // restartGame(); // Restart the game

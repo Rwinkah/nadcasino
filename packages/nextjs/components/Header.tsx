@@ -42,7 +42,7 @@ export const HeaderMenuLinks = () => {
   return (
     <>
       {menuLinks.map(({ label, href, icon }) => {
-        const isActive = pathname === href;
+        const isActive = pathname === href || pathname.includes(href);
         return (
           <li key={href}>
             <Link

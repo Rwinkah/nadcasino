@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
+import { Howl } from "howler";
 import { Bodies, Body, Common, Composite, Engine, Events, Render, Runner } from "matter-js";
 import { decomp } from "poly-decomp-es";
 // import { parseEther } from "viem";
@@ -76,6 +77,10 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
   const [showNum, setShowNum] = useState<{ id: number; value: number }[]>([]);
   // const [multiplierRender, setMultiplierRender] = useState<boolean>(false);
   const rowsRef = useRef(rows);
+  const collisionSound = new Howl({
+    src: ["/sound-effects/point.mp3"], // Replace with the path to your sound file
+    volume: 0.2, // Set volume (0.0 to 1.0)
+  });
   const riskRef = useRef(risk);
 
   // const { data: GameContract } = useScaffoldContract({ contractName: "Game" });
@@ -84,6 +89,7 @@ export default function Plinko({ stressTest }: PlinkoInterface) {
   // });
 
   async function BreakMonad() {
+    collisionSound.play();
     await game.post_report_collision(connectedAddress);
   }
   useEffect(() => {

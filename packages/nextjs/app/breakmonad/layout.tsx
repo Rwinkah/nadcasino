@@ -11,16 +11,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const plinko = pathName === "/breakmonad/plinko";
   return (
     <div className="h-full overflow-scroll w-full items-center flex flex-col justify-center">
-      <div className="flex border border-accent gap-10 text-[20px] mt-[140px] font-semibold ">
+      <div className="flex border border-accent gap-10 text-[20px] mt-[140px] font-semibold p-4 rounded-xl">
         <Link
           href="/breakmonad/plinko"
-          className={`${pathName === "/breakmonad/plinko" ? "text-white border rounded-lg border-primary  bg-accent" : ""} p-4 btn-primary w-full   h-full`}
+          className={`${pathName === "/breakmonad/plinko" ? "text-white border rounded-lg border-primary  bg-accent" : ""} p-4 btn-primary w-full min-w-[140px] text-center h-full`}
         >
           Plinko
         </Link>
 
         <Link
-          className={`${pathName === "/breakmonad/molandakrun" ? "text-white border rounded-lg border-primary  bg-accent" : ""} p-4 btn-primary w-full   h-full`}
+          className={`${pathName === "/breakmonad/molandakrun" ? "text-white border rounded-lg border-primary  bg-accent" : ""} p-4 btn-primary w-full min-w-[140px] text-center    h-full`}
           href="/breakmonad/molandakrun"
         >
           Molandakrun
