@@ -299,7 +299,7 @@ export default function MolandakRun() {
       <div>
         <p className="font-bold text-xl text-white">Leaderboard</p>
         <div className="h-[530px] overflow-hidden  overflow-y-scroll w-full lg:w-[30vw] border border-purple-500 rounded-2xl shadow-lg shadow-purple-500 bg-transparent">
-          {testData
+          {/* {testData
             .sort((a, b) => b.score - a.score)
             .map((item, index) => (
               <div key={index} className="flex pb-10 flex-col gap-4 mt-5 w-full items-center px-10">
@@ -311,7 +311,9 @@ export default function MolandakRun() {
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
+
+          <p className="text-primary font-bold shadow shadow-purple-500 text-[30px] text-center">Unavailable</p>
         </div>
       </div>
     </div>

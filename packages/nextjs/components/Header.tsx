@@ -43,6 +43,7 @@ export const HeaderMenuLinks = () => {
     <>
       {menuLinks.map(({ label, href, icon }) => {
         const isActive = pathname === href || pathname.includes(href);
+        const isGames = pathname === "games";
         return (
           <li key={href}>
             <Link
@@ -50,7 +51,7 @@ export const HeaderMenuLinks = () => {
               passHref
               className={`relative group ${
                 isActive ? "gradient-active shadow-md" : ""
-              } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral 
+              }  hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral 
     py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col 
     ${label === "Games" ? "pointer-events-none opacity-50 cursor-not-allowed" : ""}`}
             >
